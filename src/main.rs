@@ -15,6 +15,7 @@ mod search;
 mod settings;
 mod store;
 mod system;
+mod thumbs;
 mod track;
 mod ui;
 mod update;

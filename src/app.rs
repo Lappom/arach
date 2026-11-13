@@ -216,28 +216,46 @@ pub struct State {
 }
 
 /// Pictures the view asks for while it builds (covers, heroes, logos), bounded so a long
-/// library doesn't keep every decoded cover alive.
+/// library doesn't keep every decoded cover alive. Each loads from a copy shrunk to the width
+/// it draws at (`thumbs`), never the full-size file.
 #[derive(Default)]
 pub struct Images {
     cache: Option<ImageCache>,
+    thumbs: Option<crate::thumbs::Thumbs>,
     map: HashMap<(PathBuf, u32), (Image, u64)>,
+    /// The file each picture loads from, once its small copy is known.
+    resolved: HashMap<(PathBuf, u32), PathBuf>,
+    /// Pictures whose small copy is being looked for or made.
+    pending: HashSet<(PathBuf, u32)>,
     tick: u64,
     settled: usize,
+    /// The window's pixels per point, as of the last view build.
+    pub scale: f32,
 }
 
 const MAX_IMAGES: usize = 160;
 
 impl Images {
-    /// The picture at `path`, decoded to fit `px` pixels; `None` before the window exists.
+    /// The picture at `path`, decoded to fit `px` pixels wide on a 2× screen (callers size for
+    /// one; a 1× window gets half as many, a quarter of the memory); `None` before the window
+    /// exists and while its small copy is being made.
     pub fn get(&mut self, path: &std::path::Path, px: u32) -> Option<Image> {
         let cache = self.cache.as_ref()?;
         self.tick += 1;
-        let key = (path.to_path_buf(), px);
+        let density = if self.scale > 0.0 { (self.scale / 2.0).clamp(0.5, 1.5) } else { 1.0 };
+        let px = (px as f32 * density).ceil() as u32;
+        let key = (path.to_path_buf(), crate::thumbs::bucket(px));
         if let Some((img, t)) = self.map.get_mut(&key) {
             *t = self.tick;
             return Some(img.clone());
         }
-        let img = cache.file(path, px as f32 / 2.0, 2.0);
+        let Some(file) = self.resolved.get(&key) else {
+            if let Some(thumbs) = &self.thumbs && self.pending.insert(key.clone()) {
+                thumbs.request(key);
+            }
+            return None;
+        };
+        let img = cache.file(file, key.1 as f32 / 2.0, 2.0);
         self.map.insert(key, (img.clone(), self.tick));
         if self.map.len() > MAX_IMAGES {
             let mut ages: Vec<_> = self.map.iter().map(|(k, (_, t))| (*t, k.clone())).collect();
@@ -251,8 +269,24 @@ impl Images {
 
     /// True when a picture finished (or failed) since the last call.
     fn changed(&mut self) -> bool {
+        let mut resolved = false;
+        if let Some(thumbs) = &self.thumbs {
+            for (key, file) in thumbs.finished() {
+                self.pending.remove(&key);
+                self.resolved.insert(key, file);
+                resolved = true;
+            }
+        }
         let settled = self.map.values().filter(|(i, _)| i.is_ready() || i.error().is_some()).count();
-        std::mem::replace(&mut self.settled, settled) != settled
+        std::mem::replace(&mut self.settled, settled) != settled || resolved
+    }
+
+    /// Forgets every picture, for when the files under them were deleted.
+    fn forget(&mut self) {
+        self.map.clear();
+        self.resolved.clear();
+        self.pending.clear();
+        self.settled = 0;
     }
 }
 
@@ -331,7 +365,9 @@ impl State {
     /// Runs once the window exists: pictures start decoding and a fresh scan starts behind the
     /// cached library.
     pub fn setup(&mut self, waker: rune::Waker) {
-        self.images.get_mut().cache = Some(ImageCache::new(waker.clone()));
+        let images = self.images.get_mut();
+        images.cache = Some(ImageCache::new(waker.clone()));
+        images.thumbs = Some(crate::thumbs::Thumbs::new(waker.clone()));
         let icons = ImageCache::new(waker);
         // The app icon's emblem without its black tile.
         // The tile is the SVG's only <rect>; cut it whatever its colour, so recolouring it can't break this.
@@ -1206,6 +1242,7 @@ impl State {
 
     pub fn clear_cache(&mut self, tx: &mut Tx) {
         store::clear_cache();
+        self.images.get_mut().forget();
         self.cache.meta.clear();
         self.cache_bytes = 0;
         self.rebuild();

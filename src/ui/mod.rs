@@ -28,6 +28,7 @@ const CARD_RADIUS: f32 = 12.0;
 
 pub fn view(s: &State, cx: &mut Cx<State>) -> El {
     let p = palette(&s.settings, cx.system_dark());
+    s.images.borrow_mut().scale = cx.env().scale;
     cx.caption_color(p.text);
     let insets = cx.chrome_insets();
     let main_w = cx.layout_size("main").map_or(900.0, |sz| sz[0]);

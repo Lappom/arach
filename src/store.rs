@@ -211,6 +211,7 @@ pub fn clear_cache() {
     let dir = cache_dir();
     write_later_fn(Box::new(move || {
         let _ = std::fs::remove_dir_all(dir.join("art"));
+        let _ = std::fs::remove_dir_all(dir.join("thumbs"));
         let _ = std::fs::remove_file(dir.join("store.json"));
     }));
 }
