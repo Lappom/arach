@@ -232,6 +232,34 @@ fn start(exe: &Path) -> std::io::Result<()> {
     cmd.spawn().map(drop)
 }
 
+/// `arach --update`: checks, downloads and installs without the window, then starts the new
+/// version. For scripts and for testing a release; the exit code says how it went.
+pub fn cli() -> i32 {
+    let release = match latest() {
+        Ok(Some(r)) => r,
+        Ok(None) => {
+            println!("Arach {} est à jour", current());
+            return 0;
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            return 1;
+        }
+    };
+    println!("Arach {} → {}", current(), release.version);
+    let result = download(&release, |_| {}).and_then(|path| install(&path));
+    match result {
+        Ok(()) => {
+            println!("Installé, redémarrage");
+            0
+        }
+        Err(e) => {
+            eprintln!("{e}");
+            1
+        }
+    }
+}
+
 /// At startup, before the single-instance claim: when this process was started by an update,
 /// waits for the old one to exit, then clears what the update left. True after an update.
 pub fn finish() -> bool {

@@ -24,6 +24,10 @@ use rune::{App, AppSpec, Titlebar};
 use app::{Confirm, Overlay, Page, State, Tab};
 
 fn main() {
+    // `arach --update`: the whole update without a window.
+    if std::env::args().any(|a| a == "--update") {
+        std::process::exit(update::cli());
+    }
     // Headless snapshots run beside an open window.
     let headless = std::env::args().any(|a| a == "--snap");
     // After an update, the old process lets go of the single instance first.
