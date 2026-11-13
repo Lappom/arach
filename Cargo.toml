@@ -3,7 +3,8 @@ name = "arach"
 version = "0.1.0"
 edition = "2024"
 license = "MIT"
-description = "Un launcher unique pour tous les jeux du PC."
+description = "One launcher for every game on your PC: Steam, Epic, GOG, Xbox, Battle.net and more, plus emulated console games."
+repository = "https://github.com/Lappom/arach"
 
 [dependencies]
 rune = { git = "https://github.com/anomalyco/rune", rev = "764fbe9e75ebc91ab94c830181920826fb417be0", default-features = false, features = ["accessibility", "embedded-fonts", "native-file-dialog", "svg"] }

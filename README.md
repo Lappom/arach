@@ -2,244 +2,245 @@
 
 # Arach
 
-Un seul launcher pour tous les jeux du PC : Steam, Epic Games, GOG, EA, Ubisoft Connect,
+One launcher for every game on your PC: Steam, Epic Games, GOG, EA, Ubisoft Connect,
 Riot Games, Battle.net, Xbox / Microsoft Store (Game Pass), Amazon Games, Rockstar, itch.io,
-Heroic et Legendary, sur tous les disques, plus les jeux de console lancés avec leur émulateur :
-DS, 3DS, Game Boy Advance, GameCube, Wii, PlayStation 1, 2 et 3, Switch, et tout ce que
-RetroArch connaît. Écrit en Rust avec [Rune](https://github.com/anomalyco/rune)
-(rendu GPU natif, pas de webview).
+Heroic and Legendary, across every drive, plus console games launched with their emulator:
+DS, 3DS, Game Boy Advance, GameCube, Wii, PlayStation 1, 2 and 3, Switch, and anything
+RetroArch knows about. Written in Rust with [Rune](https://github.com/anomalyco/rune)
+(native GPU rendering, no webview).
+
+> Windows only. The interface is currently in French.
+
+## Download
+
+Grab `arach.exe` from the [latest release](https://github.com/Lappom/arach/releases/latest) and run it.
+No installer; Arach updates itself (see [Updates](#updates)).
 
 ## Pages
 
-- **Accueil** : le dernier jeu lancé en grand (illustration, logo, temps de jeu, Jouer), puis
-  *Joués récemment*, *Favoris*, *Installés récemment*, et **Stockage** : une carte par disque avec
-  l'espace libre et la part de chaque store.
-- **Bibliothèque** : jaquettes ou liste détaillée (temps de jeu, dernière session, taille), par
-  store, favoris, collection ou disque, triée par récence, nom, taille, temps de jeu ou note.
-  **Filtres** combinables : statut, genres, année de sortie, collection, « jamais lancé », « pas
-  lancé depuis 6 mois » ; chaque filtre actif est une pastille qui se retire d'un clic.
-  **Sélection multiple** (bouton *Sélectionner* ou `Ctrl+clic`) : favori, collection, statut,
-  masquer ou fusionner plusieurs jeux d'un coup. Les jeux possédés mais pas installés (Steam, Epic, GOG) suivent, grisés, avec un bouton
-  **Installer** qui ouvre le store ; l'étagère *À installer* les regroupe.
-- **Collections** : listes à soi (« À finir », « Coop », « Rétro »…) dans la barre latérale, en plus
-  des Favoris. On y met un jeu en glissant sa jaquette (ou sa ligne) sur le nom de la collection,
-  par clic droit, ou depuis sa fiche. Chaque collection est aussi une étagère de la Bibliothèque,
-  où elle se renomme et se supprime (les jeux restent dans la bibliothèque).
-- **Fiche d'un jeu** : illustration, description, studio, date de sortie, genres, Metacritic,
-  temps de jeu, taille, dossier, options de lancement, et pour Steam : vérifier les
-  fichiers, page du store, badge *Mise à jour en attente*. **Sauvegardes** : où le jeu les garde,
-  une copie datée en un clic, et chaque copie restaurable. **Captures d'écran** : Steam, Xbox Game
-  Bar et NVIDIA. **Succès Steam**, **Durée de vie** (HowLongToBeat, face au temps déjà joué),
-  **Mods** (dossier, Nexus Mods) et **Désinstaller**, pour tous les stores. **Ma progression** : statut (non commencé, en cours,
-  terminé, 100 %, abandonné), note sur 5, collections et notes libres. **Sessions mesurées** :
-  les dernières sessions, le total et la semaine. **Versions** : le même jeu vu par plusieurs
-  stores, chacun jouable, et *Séparer* quand ce n'est pas le même jeu. **Modifier** : nom,
-  description, studios, date et genres corrigés à la main. **Images** : choisir la jaquette, le fond
-  ou le logo parmi les résultats Steam et SteamGridDB, prendre un fichier, ou glisser une image sur
-  la fiche (verticale : jaquette, horizontale : fond). La page prend la teinte de l'illustration du jeu.
-- **Paramètres** : Général (après le lancement : réduire / rester / quitter, page d'ouverture,
-  raccourcis), Bibliothèque (stores actifs, dossiers de jeux supplémentaires, analyse), Apparence
-  (thème, couleur du bouton Jouer, taille des jaquettes, affichage), En ligne (jaquettes et
-  descriptions, langue, clé SteamGridDB, cache), Jeux masqués, À propos. Bibliothèque › Consoles
-  et Émulateurs : chaque console et l'émulateur qui la lance, trouvé seul ou choisi à la main.
+- **Home**: the last game you launched, front and center (artwork, logo, playtime, Play), then
+  *Recently played*, *Favorites*, *Recently installed*, and **Storage**: one card per drive with
+  its free space and each store's share.
+- **Library**: covers or a detailed list (playtime, last session, size), by store, favorites,
+  collection or drive, sorted by recency, name, size, playtime or rating.
+  Combinable **filters**: status, genres, release year, collection, "never launched", "not
+  launched in 6 months"; each active filter is a chip you remove with one click.
+  **Multi-select** (*Select* button or `Ctrl+click`): favorite, collect, set status, hide or merge
+  several games at once. Games you own but haven't installed (Steam, Epic, GOG) are listed too,
+  greyed out, with an **Install** button that opens their store; the *To install* shelf groups them.
+- **Collections**: your own lists ("To finish", "Co-op", "Retro"…) in the sidebar, alongside
+  Favorites. Add a game by dragging its cover (or row) onto the collection's name, from the
+  right-click menu, or from its page. Each collection is also a Library shelf, where it can be
+  renamed or deleted (the games stay in the library).
+- **Game page**: artwork, description, developer, release date, genres, Metacritic score,
+  playtime, size, folder, launch options, and for Steam: verify files, store page, *Update
+  pending* badge. **Saves**: where the game keeps them, a dated backup in one click, and every
+  backup restorable. **Screenshots**: Steam, Xbox Game Bar and NVIDIA. **Steam achievements**,
+  **How long to beat** (HowLongToBeat, against the time already played), **Mods** (folder, Nexus
+  Mods) and **Uninstall**, for every store. **My progress**: status (not started, playing,
+  finished, 100 %, abandoned), 5-star rating, collections and free-form notes. **Tracked
+  sessions**: recent sessions, the total and this week. **Versions**: the same game seen by
+  several stores, each playable, and *Split* when it isn't actually the same game. **Edit**: name,
+  description, developers, date and genres fixed by hand. **Images**: pick the cover, background
+  or logo from Steam and SteamGridDB results, use a file, or drop an image on the page (portrait:
+  cover, landscape: background). The page takes on the tint of the game's artwork.
+- **Settings**: General (after launch: minimize / stay / quit, start page, shortcuts), Library
+  (enabled stores, extra game folders, scan), Appearance (theme, Play button color, cover size,
+  layout), Online (covers and descriptions, language, SteamGridDB key, cache), Hidden games, About.
+  Library › Consoles and Emulators: each console and the emulator that runs it, detected
+  automatically or picked by hand.
 
-## Raccourcis
+## Shortcuts
 
-| Touche | Action |
+| Key | Action |
 | --- | --- |
-| *taper n'importe où* / `Ctrl+K` | Rechercher (sous-chaîne, initiales `kcd`, lettres dans l'ordre) |
-| `Entrée` dans la recherche | Lancer le premier résultat |
-| double-clic sur une jaquette | Jouer |
-| clic droit sur un jeu | Jouer · Voir la fiche · Favori · Dossier · Collections · Modifier · Jaquette · Fusionner · Masquer |
-| `Ctrl+clic` sur un jeu | Le sélectionner (puis `Ctrl+A` : tout, `Échap` : annuler) |
-| glisser une jaquette sur la barre latérale | L'ajouter aux Favoris ou à une collection |
-| `Alt+←` / `Échap` | Page précédente |
-| `Ctrl+1` `Ctrl+2` `Ctrl+3` | Accueil, Bibliothèque, Favoris |
-| `Ctrl+,` | Paramètres |
-| `F5` / `Ctrl+R` | Relancer la détection |
-| `F11` | Quitter ou reprendre le plein écran |
+| *type anywhere* / `Ctrl+K` | Search (substring, initials `kcd`, letters in order) |
+| `Enter` in search | Launch the first result |
+| double-click a cover | Play |
+| right-click a game | Play · Open page · Favorite · Folder · Collections · Edit · Cover · Merge · Hide |
+| `Ctrl+click` a game | Select it (then `Ctrl+A`: all, `Esc`: cancel) |
+| drag a cover onto the sidebar | Add it to Favorites or a collection |
+| `Alt+←` / `Esc` | Previous page |
+| `Ctrl+1` `Ctrl+2` `Ctrl+3` | Home, Library, Favorites |
+| `Ctrl+,` | Settings |
+| `F5` / `Ctrl+R` | Rescan |
+| `F11` | Toggle fullscreen |
 
-Glisser un `.exe`, un raccourci `.lnk` ou un lien `.url` sur la fenêtre l'ajoute à la bibliothèque.
+Dropping an `.exe`, a `.lnk` shortcut or a `.url` link on the window adds it to the library.
 
-## Détection
+## Detection
 
-Chaque store est lu depuis ses propres manifestes, pas en parcourant les disques, donc les jeux
-sont trouvés où qu'ils soient installés (C:, D:, F:…) en quelques millisecondes :
+Each store is read from its own manifests rather than by crawling drives, so games are found
+wherever they're installed (C:, D:, F:…) in a few milliseconds:
 
-| Store | Source | Lancement |
+| Store | Source | Launch |
 | --- | --- | --- |
-| Steam | `libraryfolders.vdf` → `appmanifest_*.acf` ; temps de jeu dans `userdata\*\config\localconfig.vdf` | `steam://rungameid/<id>` |
+| Steam | `libraryfolders.vdf` → `appmanifest_*.acf`; playtime from `userdata\*\config\localconfig.vdf` | `steam://rungameid/<id>` |
 | Epic Games | `ProgramData\Epic\…\Manifests\*.item` | `com.epicgames.launcher://apps/…?action=launch` |
-| GOG | `HKLM\…\GOG.com\Games` (DLC ignorés) | exécutable du jeu |
+| GOG | `HKLM\…\GOG.com\Games` (DLC ignored) | game executable |
 | Ubisoft | `HKLM\…\Ubisoft\Launcher\Installs` | `uplay://launch/<id>/0` |
-| Riot Games | entrées `Riot Game <produit>.<patchline>` + `RiotClientInstalls.json` | `RiotClientServices --launch-product=…` |
-| EA app | entrées de désinstallation EA avec `__Installer\installerdata.xml` | exécutable du jeu |
-| Battle.net | entrées de désinstallation Blizzard (`--uid=`) | `Battle.net.exe --exec="launch <code>"` |
-| Xbox / Microsoft Store | `Get-AppxPackage` (paquets du Store avec `MicrosoftGame.config` ou déclarés jeux) + noms du menu Démarrer | `shell:AppsFolder\<app>` |
-| Amazon Games | entrées de désinstallation `Amazon Game Remover.exe -p <id>` | `amazon-games://play/<id>` |
-| Rockstar | entrées de désinstallation du launcher (`-uninstall=<titre>`) | `Launcher.exe -launchTitleInFolder` |
-| itch.io | reçus `.itch\receipt.json.gz` dans `%APPDATA%\itch\apps` et les emplacements de `butler.db` ; jaquette du reçu | exécutable du jeu |
-| Heroic | `installed.json` de Legendary, GOG et Nile dans `%APPDATA%\heroic` | `heroic://launch?appName=…&runner=…` |
-| Legendary | `~\.config\legendary\installed.json` | `legendary launch <app>` (ou l'exécutable) |
-| Dossiers | chaque sous-dossier d'un dossier choisi dans Paramètres | exécutable trouvé dans le dossier |
+| Riot Games | `Riot Game <product>.<patchline>` entries + `RiotClientInstalls.json` | `RiotClientServices --launch-product=…` |
+| EA app | EA uninstall entries with `__Installer\installerdata.xml` | game executable |
+| Battle.net | Blizzard uninstall entries (`--uid=`) | `Battle.net.exe --exec="launch <code>"` |
+| Xbox / Microsoft Store | `Get-AppxPackage` (Store packages with `MicrosoftGame.config` or declared as games) + Start menu names | `shell:AppsFolder\<app>` |
+| Amazon Games | `Amazon Game Remover.exe -p <id>` uninstall entries | `amazon-games://play/<id>` |
+| Rockstar | launcher uninstall entries (`-uninstall=<title>`) | `Launcher.exe -launchTitleInFolder` |
+| itch.io | `.itch\receipt.json.gz` receipts in `%APPDATA%\itch\apps` and the locations in `butler.db`; cover from the receipt | game executable |
+| Heroic | Legendary, GOG and Nile `installed.json` in `%APPDATA%\heroic` | `heroic://launch?appName=…&runner=…` |
+| Legendary | `~\.config\legendary\installed.json` | `legendary launch <app>` (or the executable) |
+| Folders | each subfolder of a folder picked in Settings | executable found in the folder |
 
-**Consoles.** Les ROM et images disque sont cherchées dans les dossiers que les émulateurs
-connaissent déjà (leur liste de jeux et leurs fichiers récents) et dans les dossiers ajoutés dans
-Paramètres. Le titre et le code du jeu sont lus dans le fichier quand le format les contient :
+**Consoles.** ROMs and disc images are looked for in the folders emulators already know about
+(their game list and recent files) and in folders added in Settings. The title and game code are
+read from the file when the format carries them:
 
-| Console | Fichiers | Lu dans le fichier | Émulateur (sinon un cœur RetroArch) |
+| Console | Files | Read from the file | Emulator (otherwise a RetroArch core) |
 | --- | --- | --- | --- |
-| Nintendo DS | `.nds` | titre, éditeur, icône (bannière) | DeSmuME |
-| Nintendo 3DS | `.3ds` `.cci` `.cxi` `.cia` (décryptés) `.3dsx` ; mises à jour et DLC ignorés | titre, éditeur, icône (SMDH) | Azahar |
+| Nintendo DS | `.nds` | title, publisher, icon (banner) | DeSmuME |
+| Nintendo 3DS | `.3ds` `.cci` `.cxi` `.cia` (decrypted) `.3dsx`; updates and DLC ignored | title, publisher, icon (SMDH) | Azahar |
 | Game Boy Advance | `.gba` | code (`AXVE`) | mGBA |
-| GameCube / Wii | `.iso` `.gcm` `.rvz` `.wia` `.wbfs` `.ciso` `.gcz` | identifiant (`GZLE01`), titre | Dolphin (`-b -e`) |
-| PlayStation | `.cue` `.bin` `.chd` `.pbp` `.m3u` ; pistes et disques 2+ regroupés | numéro de série (`SCUS-94455`) | DuckStation |
-| PlayStation 2 | `.iso` `.chd` `.cso` | numéro de série (`SLUS-20062`) | PCSX2 |
-| PlayStation 3 | dossiers de jeu (`PS3_GAME\PARAM.SFO`, `dev_hdd0\game`) + `games.yml` de RPCS3 | titre, série, icône, fond | RPCS3 (`--no-gui`) |
-| Switch | `.nsp` `.xci` `.nsz` `.xcz` ; mises à jour et DLC ignorés | identifiant de titre (nom du fichier) | Ryujinx |
-| RetroArch | les playlists `*.lpl` | nom libretro exact | le cœur de la playlist |
+| GameCube / Wii | `.iso` `.gcm` `.rvz` `.wia` `.wbfs` `.ciso` `.gcz` | ID (`GZLE01`), title | Dolphin (`-b -e`) |
+| PlayStation | `.cue` `.bin` `.chd` `.pbp` `.m3u`; tracks and discs 2+ grouped | serial (`SCUS-94455`) | DuckStation |
+| PlayStation 2 | `.iso` `.chd` `.cso` | serial (`SLUS-20062`) | PCSX2 |
+| PlayStation 3 | game folders (`PS3_GAME\PARAM.SFO`, `dev_hdd0\game`) + RPCS3's `games.yml` | title, serial, icon, background | RPCS3 (`--no-gui`) |
+| Switch | `.nsp` `.xci` `.nsz` `.xcz`; updates and DLC ignored | title ID (file name) | Ryujinx |
+| RetroArch | `*.lpl` playlists | exact libretro name | the playlist's core |
 
-Une image `.iso` est reconnue par son en-tête (Nintendo, ou `SYSTEM.CNF` des PlayStation) ; une
-image compressée (`.chd`, `.gcz`) par l'émulateur qui la liste ou le dossier où elle est (`PS2`,
-`PSX`…). Les émulateurs sont trouvés dans Program Files, `%APPDATA%`, les dossiers de
-l'utilisateur, près des ROM et à la racine des disques, ou choisis dans Paramètres › Bibliothèque ›
-Émulateurs.
+An `.iso` image is recognized by its header (Nintendo, or the PlayStation `SYSTEM.CNF`); a
+compressed image (`.chd`, `.gcz`) by the emulator that lists it or the folder it's in (`PS2`,
+`PSX`…). Emulators are found in Program Files, `%APPDATA%`, the user's folders, next to the ROMs
+and at drive roots, or picked in Settings › Library › Emulators.
 
-**Doublons.** Un jeu vu par deux stores dans le même dossier (un jeu EA acheté sur Steam)
-n'apparaît qu'une fois, avec ses versions sur sa fiche ; le temps de jeu s'additionne. Si la
-fusion automatique se trompe, *Séparer* garde la version à part ; à l'inverse, *Fusionner*
-(sélection multiple ou clic droit › Fusionner avec…) réunit des jeux qu'Arach n'a pas
-rapprochés. Les stores sont
-analysés en parallèle ; la dernière analyse est gardée, donc la bibliothèque s'affiche dès la
-première image puis se met à jour en arrière-plan.
+**Duplicates.** A game seen by two stores in the same folder (an EA game bought on Steam) shows
+up once, with its versions on its page; playtime adds up. If the automatic merge gets it wrong,
+*Split* keeps the version separate; conversely, *Merge* (multi-select or right-click › Merge
+with…) joins games Arach didn't match. Stores are scanned in parallel; the last scan is cached,
+so the library shows up on the first frame and then refreshes in the background.
 
-### Temps de jeu
+### Playtime
 
-Seul Steam compte le temps de jeu ; Arach le mesure pour tous les jeux. Après un lancement, il
-cherche toutes les 2 s (pendant 5 min au plus, le temps que le launcher démarre le jeu) un
-processus lancé depuis le dossier du jeu, ou l'émulateur pour une ROM. Il le suit ensuite toutes
-les 5 s. La session se ferme après 15 s sans aucun processus, ce qui laisse le temps à un launcher
-de passer la main au jeu. Chaque session (début, fin) va dans `user.json`. Une session de moins
-de 10 s ne compte pas. Le temps affiché et trié est le plus grand des deux : celui du store ou
-celui mesuré. Arach doit rester ouvert : avec « Quitter Arach » après le lancement, rien n'est
-mesuré.
+Only Steam tracks playtime; Arach measures it for every game. After a launch, it looks every 2 s
+(for up to 5 min, while the launcher starts the game) for a process started from the game's
+folder, or the emulator for a ROM. It then follows it every 5 s. The session ends after 15 s with
+no process at all, which gives a launcher time to hand over to the game. Each session (start,
+end) goes into `user.json`. Sessions under 10 s don't count. The displayed and sorted time is the
+larger of the two: the store's or the measured one. Arach has to stay open: with "Quit Arach"
+after launch, nothing is measured.
 
-### En cours, avant et après
+### Now playing, before and after
 
-Un jeu lancé apparaît dans la barre latérale (*En cours*) avec son temps de session et un bouton
-**Arrêter**, qui remplace aussi **Jouer** sur sa fiche : il termine tous les processus du dossier
-du jeu (ou l'émulateur), puis la session se ferme normalement.
+A running game appears in the sidebar (*Now playing*) with its session time and a **Stop**
+button, which also replaces **Play** on its page: it ends every process in the game's folder (or
+the emulator), then the session closes normally.
 
-Paramètres › Général › *Avant et après chaque jeu* règle, pour tous les jeux, ce qu'Arach fait
-autour d'un lancement. Chaque fiche peut avoir ses propres réglages (« Propres à ce jeu ») :
+Settings › General › *Before and after each game* sets what Arach does around a launch, for all
+games. Each game page can have its own settings ("Specific to this game"):
 
-| Action | Avant | Après la fermeture |
+| Action | Before | After exit |
 | --- | --- | --- |
-| Script | `cmd /C <commande>` sans fenêtre, attendu 1 min au plus | lancé sans attendre |
-| Fermer Discord | Discord, PTB ou Canary terminé | relancé réduit (via `Update.exe`) |
-| Mode d'alimentation | `PowerSetActiveScheme` (modes lus sur le PC) | mode précédent |
-| Résolution | écran principal, sans écrire dans le registre | résolution habituelle |
+| Script | `cmd /C <command>` with no window, waited on for up to 1 min | started without waiting |
+| Close Discord | Discord, PTB or Canary terminated | restarted minimized (via `Update.exe`) |
+| Power plan | `PowerSetActiveScheme` (plans read from the PC) | previous plan |
+| Resolution | primary display, without writing to the registry | usual resolution |
 
-Les actions ne s'appliquent qu'aux jeux dont Arach voit la fermeture (pas aux raccourcis `.lnk`
-ou `.url` ajoutés à la main). Avec des actions après le jeu, « Quitter Arach » devient « Réduire »
-pour ce lancement ; si Arach est fermé pendant le jeu, il remet tout en place en partant.
+Actions only apply to games whose exit Arach can see (not `.lnk` or `.url` shortcuts added by
+hand). With after-game actions, "Quit Arach" becomes "Minimize" for that launch; if Arach is
+closed during the game, it restores everything on its way out.
 
-**Discord Rich Presence** : le profil Discord affiche le jeu lancé depuis Arach (nom, store, durée,
-image Steam si elle existe), quel que soit son store. Arach parle à Discord par son pipe local
-(`\\.\pipe\discord-ipc-N`) sous une application Discord à soi : créez-la sur
-discord.com/developers/applications (nommez-la « Arach ») et collez son *Application ID* dans
-Paramètres › Général › Discord.
+**Discord Rich Presence**: your Discord profile shows the game launched from Arach (name, store,
+duration, Steam image when there is one), whatever its store. Arach talks to Discord over its
+local pipe (`\\.\pipe\discord-ipc-N`) as a Discord application of your own: create one at
+discord.com/developers/applications (name it "Arach") and paste its *Application ID* in
+Settings › General › Discord.
 
-### Jeux possédés non installés
+### Owned but not installed
 
-| Store | Source | Installer |
+| Store | Source | Install |
 | --- | --- | --- |
-| Steam | jeux des dossiers `appcache\librarycache` et ceux qui ont du temps de jeu dans `localconfig.vdf`, nommés et triés (jeux seulement) par `appcache\appinfo.vdf` | `steam://install/<id>` |
-| Epic Games | `catcache.bin` du launcher (catalogue en base64), catégorie `games` | `com.epicgames.launcher://apps/…?action=install` |
-| GOG | base de GOG Galaxy (`galaxy-2.0.db`, table `LibraryReleases`), DLC et packs ignorés | `goggalaxy://openGameView/<id>` |
+| Steam | games in `appcache\librarycache` and those with playtime in `localconfig.vdf`, named and filtered (games only) by `appcache\appinfo.vdf` | `steam://install/<id>` |
+| Epic Games | the launcher's `catcache.bin` (base64 catalog), `games` category | `com.epicgames.launcher://apps/…?action=install` |
+| GOG | GOG Galaxy database (`galaxy-2.0.db`, `LibraryReleases` table), DLC and packs ignored | `goggalaxy://openGameView/<id>` |
 
-Ces listes sont celles que les launchers gardent en cache : un jeu jamais affiché dans le
-launcher peut manquer. Désactivable dans Paramètres › Bibliothèque.
+These are the lists launchers keep cached: a game never shown in its launcher may be missing.
+Can be turned off in Settings › Library.
 
-## Illustrations et informations
+## Artwork and metadata
 
-Steam garde les illustrations de ses jeux en local (`appcache\librarycache`). Pour les autres,
-Arach cherche le jeu par son nom sur l'API publique du Steam Store et télécharge jaquette,
-illustration et logo, avec la description, le studio, la date de sortie et les genres. Les jeux
-absents de Steam (League of Legends, Teamfight Tactics, Valorant…) sont cherchés de la même
-façon sur l'Epic Games Store (jaquette, illustration, description, studio, date). Les jeux de
-console sont cherchés par le code lu dans le fichier (`CPUF`, `GZLE01`, `SLUS-20062`…) :
-jaquette sur GameTDB (DS, 3DS, GameCube/Wii, PS3) ou libretro-thumbnails, mise au format 2:3 sur
-un fond flouté, et écran titre (ou capture) sur libretro-thumbnails, retrouvé via les bases
-No-Intro et Redump de libretro (mises en cache 30 jours) ou le nom exact du fichier. La jaquette
-fournie par itch.io est reprise. Avec une clé SteamGridDB, *Changer les images* propose aussi les
-créations de sa communauté. Seuls
-les noms des jeux sont envoyés ; un nom qui ne correspond pas exactement est ignoré plutôt que
-d'afficher une mauvaise jaquette. Désactivable dans Paramètres › En ligne.
+Steam keeps its games' artwork locally (`appcache\librarycache`). For everything else, Arach looks
+the game up by name on the public Steam Store API and downloads the cover, hero art and logo,
+along with the description, developer, release date and genres. Games not on Steam (League of
+Legends, Teamfight Tactics, Valorant…) are looked up the same way on the Epic Games Store (cover,
+hero art, description, developer, date). Console games are looked up by the code read from the
+file (`CPUF`, `GZLE01`, `SLUS-20062`…): cover from GameTDB (DS, 3DS, GameCube/Wii, PS3) or
+libretro-thumbnails, fitted to 2:3 over a blurred background, and title screen (or snapshot) from
+libretro-thumbnails, matched through libretro's No-Intro and Redump databases (cached 30 days) or
+the exact file name. The cover itch.io provides is reused. With a SteamGridDB key, *Change images*
+also offers its community's artwork. Only game names are sent; a name that doesn't match exactly
+is skipped rather than showing the wrong cover. Can be turned off in Settings › Online.
 
-| Où | Quoi |
+| Where | What |
 | --- | --- |
-| `%APPDATA%\Arach` | `settings.json`, `user.json` (favoris, masqués, options de lancement, jeux ajoutés, sessions de jeu, collections, statut, note et notes de chaque jeu, informations corrigées, images choisies, fusions et séparations), `covers\` (images choisies), `library.json` (dernière analyse) |
-| `%APPDATA%\Arach\saves` | une copie des sauvegardes par dossier daté, avec `arach-backup.json` (d'où vient chaque fichier) |
-| `%LOCALAPPDATA%\Arach` | `store.json` (infos Steam Store, tailles mesurées), `art\` (illustrations), `ludusavi-manifest.yaml`, `hltb.json` |
+| `%APPDATA%\Arach` | `settings.json`, `user.json` (favorites, hidden games, launch options, added games, play sessions, collections, each game's status, rating and notes, edited metadata, chosen images, merges and splits), `covers\` (chosen images), `library.json` (last scan) |
+| `%APPDATA%\Arach\saves` | one save backup per dated folder, with `arach-backup.json` (where each file came from) |
+| `%LOCALAPPDATA%\Arach` | `store.json` (Steam Store info, measured sizes), `art\` (artwork), `ludusavi-manifest.yaml`, `hltb.json` |
 
-### Fiche d'un jeu : le reste
+### Game page: the rest
 
-| Quoi | Source |
+| What | Source |
 | --- | --- |
-| Sauvegardes | Manifeste de [Ludusavi](https://github.com/mtkennerly/ludusavi-manifest) (tiré de PCGamingWiki) : celui de Ludusavi s'il est installé, sinon téléchargé et gardé 7 jours ; le jeu est trouvé par son id Steam, puis par son nom. À défaut, les modèles `Game data/saves` de la page PCGamingWiki du jeu. Seuls les chemins Windows qui existent sont gardés ; le dossier entier du jeu ne compte jamais comme sauvegarde. |
-| Copier, restaurer | Copie dans `%APPDATA%\Arach\saves\<jeu>\<date>`. Restaurer remplace les sauvegardes actuelles après les avoir copiées à leur tour (copie marquée *faite avant une restauration*) ; refusé pendant que le jeu tourne. Restaurer et supprimer demandent une seconde pression. |
-| Captures d'écran | Steam : `userdata\<compte>\760\remote\<appid>\screenshots`. Game Bar : `Vidéos\Captures`, fichiers nommés d'après la fenêtre du jeu suivie de la date. NVIDIA : `Vidéos\<Jeu>` et `Vidéos\NVIDIA\<Jeu>`. |
-| Mods | Premier dossier trouvé parmi `Mods`, `BepInEx\plugins`, `Content\Paks\~mods`… ; sinon le dossier du jeu. Nexus Mods : la recherche par nom. |
-| Succès Steam | `appcache\stats\UserGameStatsSchema_<appid>.bin` (la liste) et `UserGameStats_<compte>_<appid>.bin` (les bits gagnés et leur date), en KeyValues binaire ; sinon la page XML du profil public. |
-| Mise à jour en attente | `StateFlags` de l'`appmanifest` (bits 2, 256, 512, 1024) ou `TargetBuildID` différent de `buildid`. |
-| HowLongToBeat | La recherche du site (`/api/search/site`, avec le jeton de `/api/search/site/init`) ; seul un nom identique (ou un alias) compte. Gardé 30 jours. |
-| Désinstaller | Steam : `steam://uninstall/<id>`. Les autres : l'`UninstallString` des entrées de désinstallation du registre, trouvée par dossier d'installation, puis par nom ; Xbox : Applications installées. Une seconde pression confirme. |
+| Saves | The [Ludusavi](https://github.com/mtkennerly/ludusavi-manifest) manifest (from PCGamingWiki): Ludusavi's own copy if it's installed, otherwise downloaded and kept 7 days; the game is matched by Steam ID, then by name. Failing that, the `Game data/saves` templates on the game's PCGamingWiki page. Only Windows paths that exist are kept; the whole game folder never counts as a save. |
+| Back up, restore | Copied to `%APPDATA%\Arach\saves\<game>\<date>`. Restore replaces the current saves after backing them up in turn (marked *made before a restore*); refused while the game is running. Restore and delete need a second press. |
+| Screenshots | Steam: `userdata\<account>\760\remote\<appid>\screenshots`. Game Bar: `Videos\Captures`, files named after the game's window followed by the date. NVIDIA: `Videos\<Game>` and `Videos\NVIDIA\<Game>`. |
+| Mods | First folder found among `Mods`, `BepInEx\plugins`, `Content\Paks\~mods`…; otherwise the game folder. Nexus Mods: search by name. |
+| Steam achievements | `appcache\stats\UserGameStatsSchema_<appid>.bin` (the list) and `UserGameStats_<account>_<appid>.bin` (unlocked bits and their date), in binary KeyValues; otherwise the public profile's XML page. |
+| Update pending | The `appmanifest`'s `StateFlags` (bits 2, 256, 512, 1024) or a `TargetBuildID` different from `buildid`. |
+| HowLongToBeat | The site's own search (`/api/search/site`, with the token from `/api/search/site/init`); only an identical name (or alias) counts. Kept 30 days. |
+| Uninstall | Steam: `steam://uninstall/<id>`. Others: the `UninstallString` of the registry's uninstall entries, matched by install folder, then by name; Xbox: Installed apps. A second press confirms. |
 
-## Mises à jour
+## Updates
 
-Arach se met à jour depuis les [GitHub Releases](https://github.com/Lappom/arach/releases). Au
-démarrage, il demande à GitHub la dernière version publiée ; si elle est plus récente, son
-`arach.exe` se télécharge en arrière-plan dans `%LOCALAPPDATA%\Arach\update\`, et sa taille et son
-empreinte (`arach.exe.sha256`) sont vérifiées. *Arach X est prêt* apparaît alors dans la barre latérale ;
-**Redémarrer et installer** (Paramètres › À propos) met le nouvel exe à la place de l'ancien et
-relance Arach. Rien ne s'installe sans ce clic. La recherche au démarrage se désactive dans
-À propos, et elle n'a jamais lieu dans un build debug.
+Arach updates itself from [GitHub Releases](https://github.com/Lappom/arach/releases). On
+startup, it asks GitHub for the latest published version; if it's newer, its `arach.exe` downloads
+in the background to `%LOCALAPPDATA%\Arach\update\`, and its size and hash (`arach.exe.sha256`)
+are checked. *Arach X is ready* then appears in the sidebar; **Restart and install** (Settings ›
+About) swaps the new exe in for the old one and restarts Arach. Nothing installs without that
+click. The startup check can be turned off in About, and it never runs in a debug build.
 
-Si Arach est dans un dossier protégé (`Program Files`), il ne peut pas se remplacer lui-même : il le
-dit et renvoie vers la page de la release.
+If Arach lives in a protected folder (`Program Files`), it can't replace itself: it says so and
+points to the release page.
 
-Publier une version : passer `version` à `X.Y.Z` dans `Cargo.toml`, puis pousser le tag `vX.Y.Z`.
-Le workflow `.github/workflows/release.yml` compile, teste et publie `arach.exe` et
+Publishing a version: set `version` to `X.Y.Z` in `Cargo.toml`, then push the tag `vX.Y.Z`.
+The `.github/workflows/release.yml` workflow builds, tests and publishes `arach.exe` and
 `arach.exe.sha256`.
 
-## Compiler
+## Building
 
 ```sh
 cargo build --release      # target/release/arach.exe
-cargo test                 # parseurs, recherche, choix d'exécutable, dates
-cargo test scan_this_pc -- --ignored --nocapture     # détection réelle sur ce PC
-cargo test owned_on_this_pc -- --ignored --nocapture # jeux possédés non installés (Steam, Epic, GOG)
-cargo test lookup_cyberpunk -- --ignored --nocapture # requête au Steam Store
-cargo test lookup_league -- --ignored --nocapture    # requête à l'Epic Games Store
-cargo test scan_roms -- --ignored --nocapture         # émulateurs et ROM sur ce PC
-cargo test lookup_roms -- --ignored --nocapture        # jaquettes GameTDB et images libretro
-cargo test latest_release -- --ignored --nocapture     # dernière release sur GitHub
-cargo test saves_on_this_pc -- --ignored --nocapture   # sauvegardes des jeux de ce PC (Ludusavi, PCGamingWiki)
-cargo test achievements_on_this_pc -- --ignored --nocapture # succès Steam lus en local
-cargo test lookup_celeste -- --ignored --nocapture     # requête à HowLongToBeat
+cargo test                 # parsers, search, executable picking, dates
+cargo test scan_this_pc -- --ignored --nocapture     # real detection on this PC
+cargo test owned_on_this_pc -- --ignored --nocapture # owned but not installed games (Steam, Epic, GOG)
+cargo test lookup_cyberpunk -- --ignored --nocapture # Steam Store request
+cargo test lookup_league -- --ignored --nocapture    # Epic Games Store request
+cargo test scan_roms -- --ignored --nocapture         # emulators and ROMs on this PC
+cargo test lookup_roms -- --ignored --nocapture        # GameTDB covers and libretro images
+cargo test latest_release -- --ignored --nocapture     # latest release on GitHub
+cargo test saves_on_this_pc -- --ignored --nocapture   # saves of this PC's games (Ludusavi, PCGamingWiki)
+cargo test achievements_on_this_pc -- --ignored --nocapture # Steam achievements read locally
+cargo test lookup_celeste -- --ignored --nocapture     # HowLongToBeat request
 ```
 
-La toolchain (`rust-toolchain.toml`) est installée par rustup au premier build.
+The toolchain (`rust-toolchain.toml`) is installed by rustup on the first build.
 
-Captures headless, avec un dossier de données à part pour ne pas toucher à la vraie
-bibliothèque :
+Headless screenshots, with a separate data folder so the real library isn't touched:
 
 ```sh
 ARACH_DATA_DIR=/tmp/arach target/debug/arach --snap out.png --scene game-steam --frames 150
 ```
 
-Scènes : `library`, `list`, `search`, `game`, `game-steam`, `playing`, `game-3ds`, `library-ds`, `settings`, `settings-library`,
+Scenes: `library`, `list`, `search`, `game`, `game-steam`, `playing`, `game-3ds`, `library-ds`, `settings`, `settings-library`,
 `settings-look`, `settings-about`, `update`, `light`, `toast`.
 
-Police des titres : Big Shoulders Display (SIL OFL 1.1, `assets/fonts/`).
+## License
+
+[MIT](LICENSE). Display font: Big Shoulders Display (SIL OFL 1.1, `assets/fonts/`).
