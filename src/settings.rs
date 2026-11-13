@@ -136,8 +136,6 @@ pub struct Settings {
     pub actions: Actions,
     /// The game being played on the user's Discord profile.
     pub discord_presence: bool,
-    /// The Discord application the activity is shown under (discord.com/developers).
-    pub discord_app_id: String,
     /// Which settings format this was saved with (0: before versions were counted). Missing
     /// means 0, not `Settings::default()`'s current version.
     #[serde(default)]
@@ -147,6 +145,10 @@ pub struct Settings {
 }
 
 pub const VERSION: u32 = 2;
+
+/// Arach's Discord application, which the activity is shown under: it reads "Arach" when the
+/// game's name can't be shown.
+pub const DISCORD_APP_ID: &str = "1570879122874302596";
 
 impl Default for Settings {
     fn default() -> Self {
@@ -173,7 +175,6 @@ impl Default for Settings {
             show_owned: true,
             actions: Actions::default(),
             discord_presence: true,
-            discord_app_id: String::new(),
             version: VERSION,
             auto_update: true,
         }

@@ -148,10 +148,9 @@ hand). With after-game actions, "Quit Arach" becomes "Minimize" for that launch;
 closed during the game, it restores everything on its way out.
 
 **Discord Rich Presence**: your Discord profile shows the game launched from Arach (name, store,
-duration, Steam image when there is one), whatever its store. Arach talks to Discord over its
-local pipe (`\\.\pipe\discord-ipc-N`) as a Discord application of your own: create one at
-discord.com/developers/applications (name it "Arach") and paste its *Application ID* in
-Settings › General › Discord.
+duration, Steam image when there is one), whatever its store, as long as the Discord desktop app
+is open. Arach talks to Discord over its local pipe (`\\.\pipe\discord-ipc-N`) under its own
+Discord application, with nothing to set up (Settings › General › Discord turns it off).
 
 ### Owned but not installed
 

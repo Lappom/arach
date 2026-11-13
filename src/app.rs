@@ -181,7 +181,6 @@ pub struct State {
     /// The same, for the game whose page shows, when it has its own.
     pub game_scripts: [TextEdit; 2],
     /// The Discord application id field.
-    pub discord_id: TextEdit,
     pub dragging: Option<Dragging>,
     /// Where each drop target sits in the window, as of the last frame.
     pub drop_targets: RefCell<Vec<(DropTarget, [f32; 4])>>,
@@ -272,7 +271,6 @@ impl State {
             StartPage::Library => Page::Library,
         };
         let scripts = [TextEdit::new(&settings.actions.before), TextEdit::new(&settings.actions.after)];
-        let discord_id = TextEdit::new(&settings.discord_app_id);
         let mut s = State {
             library,
             user,
@@ -300,7 +298,6 @@ impl State {
             presence: None,
             scripts,
             game_scripts: [TextEdit::new(""), TextEdit::new("")],
-            discord_id,
             dragging: None,
             drop_targets: RefCell::new(Vec::new()),
             page,
@@ -820,10 +817,10 @@ impl State {
 
     /// Shows the game started last on the Discord profile, or nothing.
     fn update_presence(&mut self) {
-        let on = self.settings.discord_presence && !self.settings.discord_app_id.trim().is_empty();
+        let on = self.settings.discord_presence;
         let latest = self.playing.iter().max_by_key(|(_, start)| **start).map(|(id, start)| (id.clone(), *start));
         let want = latest.filter(|_| on);
-        let key = want.as_ref().map(|(id, start)| format!("{id}@{start}@{}", self.settings.discord_app_id));
+        let key = want.as_ref().map(|(id, start)| format!("{id}@{start}"));
         if key == self.presence { return; }
         self.presence = key;
         let Some((id, start)) = want else {
@@ -838,8 +835,7 @@ impl State {
         let image = g.steam_appid
             .map(|a| format!("https://cdn.cloudflare.steamstatic.com/steam/apps/{a}/header.jpg"))
             .or_else(|| g.remote_cover.clone().filter(|u| u.starts_with("https://")));
-        let app_id = self.settings.discord_app_id.trim().to_string();
-        discord::set(discord::Activity { app_id, game: g.name.clone(), store, start, image });
+        discord::set(discord::Activity { game: g.name.clone(), store, start, image });
     }
 
     // ------------------------------------------------ actions before and after
@@ -894,11 +890,6 @@ impl State {
             Scope::Game(_) => self.game_scripts[which].text.clone(),
         };
         self.edit_actions(scope, tx, |a| if which == 0 { a.before = text } else { a.after = text });
-    }
-
-    pub fn discord_id_changed(&mut self, tx: &mut Tx) {
-        let id: String = self.discord_id.text.chars().filter(char::is_ascii_digit).collect();
-        self.set(tx, |st| st.discord_app_id = id);
     }
 
     /// A game owned but not installed: its store's install page.
@@ -1199,7 +1190,7 @@ impl State {
         if (!before.online && self.settings.online) || before.french != self.settings.french {
             self.fetch_meta();
         }
-        if before.discord_presence != self.settings.discord_presence || before.discord_app_id != self.settings.discord_app_id {
+        if before.discord_presence != self.settings.discord_presence {
             self.update_presence();
         }
         if !before.auto_update && self.settings.auto_update {

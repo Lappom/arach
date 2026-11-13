@@ -4,7 +4,7 @@
 //!
 //! Discord shows the activity under an application's name; `status_display_type: 2` asks it
 //! to show the details line (the game's name) instead, so the profile reads the game, not
-//! "Arach". The application is the user's own (Paramètres › Général › Discord).
+//! "Arach". The application is Arach's own (`settings::DISCORD_APP_ID`).
 
 use std::io::{Read, Write};
 use std::sync::OnceLock;
@@ -12,8 +12,9 @@ use std::sync::mpsc::{Sender, channel};
 
 use serde_json::{Value, json};
 
+use crate::settings::DISCORD_APP_ID;
+
 pub struct Activity {
-    pub app_id: String,
     pub game: String,
     /// "Steam", "Nintendo 3DS"…; empty for a game added by hand.
     pub store: String,
@@ -44,17 +45,15 @@ fn send(m: Msg) {
     let tx = TX.get_or_init(|| {
         let (tx, rx) = channel::<Msg>();
         std::thread::spawn(move || {
-            let mut conn: Option<(String, Pipe)> = None;
+            let mut conn: Option<Pipe> = None;
             for m in rx {
                 match m {
                     Msg::Set(a) => {
-                        // A new application id needs a new handshake.
-                        if conn.as_ref().is_some_and(|(id, _)| *id != a.app_id) { conn = None; }
                         let frame = activity_frame(&a);
                         // A pipe left over from a Discord that restarted fails once; try anew.
                         for _ in 0..2 {
-                            if conn.is_none() { conn = Pipe::connect(&a.app_id).map(|p| (a.app_id.clone(), p)); }
-                            let Some((_, pipe)) = &mut conn else { break };
+                            if conn.is_none() { conn = Pipe::connect(DISCORD_APP_ID); }
+                            let Some(pipe) = &mut conn else { break };
                             if pipe.call(&frame).is_ok() { break; }
                             conn = None;
                         }
@@ -103,7 +102,6 @@ const CLOSE: u32 = 2;
 impl Pipe {
     /// Discord listens on the first free pipe of ten.
     fn connect(app_id: &str) -> Option<Pipe> {
-        if app_id.trim().is_empty() { return None; }
         for i in 0..10 {
             let path = if cfg!(windows) {
                 format!(r"\\.\pipe\discord-ipc-{i}")
@@ -113,7 +111,7 @@ impl Pipe {
             };
             let Ok(file) = std::fs::OpenOptions::new().read(true).write(true).open(&path) else { continue };
             let mut pipe = Pipe(file);
-            if pipe.write(HANDSHAKE, &json!({ "v": 1, "client_id": app_id.trim() })).is_ok()
+            if pipe.write(HANDSHAKE, &json!({ "v": 1, "client_id": app_id })).is_ok()
                 && pipe.read().is_ok_and(|(op, _)| op == FRAME)
             {
                 return Some(pipe);
@@ -159,7 +157,6 @@ mod tests {
     #[test]
     fn activity_names_the_game() {
         let f = activity_frame(&Activity {
-            app_id: "1".into(),
             game: "Hollow Knight".into(),
             store: "GOG".into(),
             start: 1_700_000_000,

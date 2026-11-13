@@ -262,25 +262,10 @@ pub fn game_actions(s: &State, p: &Palette, g: &Game, layer: &mut Vec<El>) -> El
 
 fn discord(s: &State, p: &Palette) -> El {
     let on = s.settings.discord_presence;
-    let missing = s.settings.discord_app_id.is_empty();
-    let field = row().key("discord-id-box").w(220.0).h(34.0).px(10.0).radius(5.0).center_y().fill(p.field)
-        .border(1.0, if on && missing { p.danger.alpha(0.6) } else { p.line })
-        .focus_within_ring(2.0, 1.0, p.accent.alpha(0.5))
-        .child(rune::text_input(&s.discord_id, mono(12.5).lh(18.0))
-            .key("discord-id").single_line().grow(1.0).color(p.text)
-            .placeholder("123456789012345678", p.faint).label("ID d'application Discord")
-            .on_edit(|s: &mut State| &mut s.discord_id)
-            .on_input_change(|s: &mut State, tx: &mut Tx| s.discord_id_changed(tx)));
-    let id_help = if missing {
-        "Requis. Sur discord.com/developers/applications : New Application, nommez-la « Arach », puis copiez l'Application ID ici."
-    } else {
-        "L'application Discord sous laquelle l'activité s'affiche."
-    };
     group(p, "Discord", vec![
         setting(p, "Afficher le jeu en cours",
             "Votre profil Discord indique le jeu lancé depuis Arach et depuis quand, quel que soit son store. Discord doit être ouvert.",
             toggle(p, "discord-presence", "Afficher le jeu en cours sur Discord", on, |st| st.discord_presence = !st.discord_presence)),
-        setting(p, "ID d'application", id_help, field),
     ])
 }
 
