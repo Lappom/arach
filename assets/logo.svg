@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="952" height="1024" viewBox="0 0 952 1024">
+<!-- SVG created with Arrow, by QuiverAI (https://quiver.ai) -->
+  <defs>
+    <linearGradient id="graphite-left" x1="110" y1="290" x2="446" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#292929"/>
+      <stop offset=".53" stop-color="#353534"/>
+      <stop offset="1" stop-color="#292a29"/>
+    </linearGradient>
+    <linearGradient id="graphite-right" x1="841" y1="290" x2="507" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#292929"/>
+      <stop offset=".53" stop-color="#353534"/>
+      <stop offset="1" stop-color="#292a29"/>
+    </linearGradient>
+    <linearGradient id="crown-shading" x1="369" y1="282" x2="563" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2c2c2b"/>
+      <stop offset=".52" stop-color="#353534"/>
+      <stop offset="1" stop-color="#2d2d2c"/>
+    </linearGradient>
+    <linearGradient id="red-left" x1="82" y1="325" x2="327" y2="51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c8261c"/>
+      <stop offset=".47" stop-color="#f3584b"/>
+      <stop offset="1" stop-color="#d42c21"/>
+    </linearGradient>
+    <linearGradient id="red-right" x1="868" y1="325" x2="624" y2="51" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c8261c"/>
+      <stop offset=".47" stop-color="#f5604f"/>
+      <stop offset="1" stop-color="#d42c21"/>
+    </linearGradient>
+    <linearGradient id="red-legs" x1="476" y1="354" x2="476" y2="860" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e23a2e"/>
+      <stop offset=".45" stop-color="#e03829"/>
+      <stop offset=".72" stop-color="#f3584b"/>
+      <stop offset="1" stop-color="#b81f16"/>
+    </linearGradient>
+    <linearGradient id="forehead-red" x1="462" y1="209" x2="490" y2="387" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f36458"/>
+      <stop offset=".57" stop-color="#e2392d"/>
+      <stop offset=".81" stop-color="#f04c3f"/>
+      <stop offset="1" stop-color="#b51c12"/>
+    </linearGradient>
+    <linearGradient id="eye-red" x1="476" y1="371" x2="476" y2="517" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ea4134"/>
+      <stop offset=".48" stop-color="#f3584b"/>
+      <stop offset="1" stop-color="#9c140c"/>
+    </linearGradient>
+    <linearGradient id="letter-red" x1="476" y1="914" x2="476" y2="978" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dd3226"/>
+      <stop offset=".48" stop-color="#f04c3f"/>
+      <stop offset="1" stop-color="#c4231a"/>
+    </linearGradient>
+  </defs>
+  <rect id="black-background" width="952" height="1024" fill="#0b0b0b"/>
+  <g id="arachnid-emblem">
+    <g id="upper-left-blade">
+      <path d="M330 46 262 241 105 337 171 177Z" fill="url(#graphite-left)"/>
+      <path d="m330 46-19 30-76 75-44 36-82 145-24 23 86-178Z" fill="url(#red-left)"/>
+    </g>
+    <g id="upper-right-blade">
+      <path d="m623 46 68 195 156 96-69-160Z" fill="url(#graphite-right)"/>
+      <path d="m623 46 19 30 76 75 43 36 83 145 24 23-90-178Z" fill="url(#red-right)"/>
+    </g>
+    <g id="inner-raised-legs">
+      <path id="left-raised-leg" d="m336 176-18 140 26 36-12 37-94-84Z" fill="url(#graphite-left)"/>
+      <path id="right-raised-leg" d="m615 176 19 140-26 36 12 37 94-84Z" fill="url(#graphite-right)"/>
+    </g>
+    <g id="long-outer-left-leg">
+      <path d="m192 358 7-4q4-2 10 1l108 42 27 36-131-23-86 95-45 118 83 232L47 636l28-178 88-83Z" fill="url(#graphite-left)"/>
+      <path d="m192 358-29 17-88 83-28 178 51-166Z" fill="url(#red-legs)"/>
+      <path d="m47 636 18 14 84 175Z" fill="url(#red-legs)"/>
+    </g>
+    <g id="long-outer-right-leg">
+      <path d="m760 358-7-4q-4-2-10 1l-108 42-25 33 128-20 87 95 45 118-86 236 122-221-29-180-88-83Z" fill="url(#graphite-right)"/>
+      <path d="m760 358 29 17 88 83 29 180-53-168Z" fill="url(#red-legs)"/>
+      <path d="m906 638-19 13-84 175Z" fill="url(#red-legs)"/>
+    </g>
+    <g id="inner-descending-left-leg">
+      <path d="m254 466 76-13q14-2 22 2t15 11l-82 52-34 56 26 157 35 129-81-133-48-163 57-87Z" fill="url(#graphite-left)"/>
+      <path d="m254 466-39 102 26 154 71 138-81-133-48-163 57-87Z" fill="url(#red-legs)"/>
+    </g>
+    <g id="inner-descending-right-leg">
+      <path d="m698 466-76-14q-14-3-24 1l-13 12 81 53 35 56-26 157-35 129 81-133 48-163-57-87Z" fill="url(#graphite-right)"/>
+      <path d="m698 466 40 102-27 154-71 138 81-133 48-163-57-87Z" fill="url(#red-legs)"/>
+    </g>
+    <g id="head-and-mandibles">
+      <path id="shield-shaped-head" d="m476 209-78 56q-17 14-31 29l26 48 60 53 23 63 24-63 59-53 28-48q-18-19-34-32Z" fill="url(#crown-shading)"/>
+      <path id="central-red-crest" d="m476 209-5 4-9 134 14 40 14-40-9-134Z" fill="url(#forehead-red)"/>
+      <path id="left-cheek-and-fang" d="m367 307-26 104 59 59-14 33 55 83 21 23-9-59-24-80-32-29-13-66Z" fill="url(#graphite-left)"/>
+      <path id="right-cheek-and-fang" d="m585 307 26 104-59 59 13 33-54 81-20 22 9-56 23-80 32-29 14-66Z" fill="url(#graphite-right)"/>
+      <path id="left-angular-eye" d="m384 371 60 51 14 27 3 68-12-68-40-37Z" fill="url(#eye-red)"/>
+      <path id="right-angular-eye" d="m568 371-61 51-13 27-3 68 12-68 39-37Z" fill="url(#eye-red)"/>
+    </g>
+  </g>
+  <g id="arach-wordmark" fill="url(#letter-red)" aria-label="ARACH">
+    <path id="letter-a-first" d="m192 977 49.5-63 48.5 63h-17.5l-31-37-31.5 37Z"/>
+    <path id="letter-r" d="M321 914h67q15 0 15.5 15v13q0 14-15 15.5L403 977h-20l-14.5-19.5H336V977h-15v-34.5h65q2.5 0 2.5-3v-7.5q0-3-3-3H321Z"/>
+    <path id="letter-a-second" d="m433 977 48.5-63 49.5 63h-18l-31.5-37-31 37Z"/>
+    <path id="letter-c" d="M637.5 914H574q-15 0-15 16v31q0 16 15 16h63.5v-15.5H577q-2.5 0-2.5-3V932q0-3 3-3h60Z"/>
+    <path id="letter-h" d="M672 914h15.5v24h49v-24H752v63h-15.5v-23.5h-49V977H672Z"/>
+  </g>
+</svg>

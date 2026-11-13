@@ -1,0 +1,45 @@
+# Pushing a tag `vX.Y.Z` builds arach.exe and publishes it as a GitHub Release, with the
+# `arach.exe.sha256` the updater checks the download against (src/update.rs).
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag matches Cargo.toml
+        shell: bash
+        run: |
+          version=$(grep -m1 '^version' Cargo.toml | cut -d'"' -f2)
+          if [ "v$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME, but Cargo.toml says $version" >&2
+            exit 1
+          fi
+
+      # rust-toolchain.toml picks the toolchain; rustup installs it on first use.
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Test
+        run: cargo test --release
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Publish
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir dist
+          cp target/release/arach.exe dist/arach.exe
+          (cd dist && sha256sum arach.exe > arach.exe.sha256)
+          gh release create "$GITHUB_REF_NAME" dist/arach.exe dist/arach.exe.sha256 \
+            --title "Arach ${GITHUB_REF_NAME#v}" --generate-notes

@@ -1,0 +1,2 @@
+// The icon Explorer shows for arach.exe, and the one its windows load (main.rs, APP_ICON).
+1 ICON "icon.ico"
