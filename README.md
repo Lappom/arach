@@ -11,6 +11,8 @@ RetroArch knows about. Written in Rust with [Rune](https://github.com/anomalyco/
 
 > Windows only. The interface is currently in French.
 
+![Arach's home page: the last game played up front, then the recently played shelf](assets/screenshots/home.jpg)
+
 ## Download
 
 Grab `arach.exe` from the [latest release](https://github.com/Lappom/arach/releases/latest) and run it.
