@@ -21,6 +21,10 @@ pub use widgets::playtime;
 
 pub const TOPBAR: f32 = 48.0;
 const SIDEBAR: f32 = 236.0;
+/// How far the page sits in from the window's edges, and how round its corners are: the page
+/// floats as a card on the sidebar's ground.
+const INSET: f32 = 8.0;
+const CARD_RADIUS: f32 = 12.0;
 
 pub fn view(s: &State, cx: &mut Cx<State>) -> El {
     let p = palette(&s.settings, cx.system_dark());
@@ -42,22 +46,38 @@ pub fn view(s: &State, cx: &mut Cx<State>) -> El {
     overlay::edit_game(s, &p, &mut layer);
     overlay::art_picker(s, &p, &mut layer);
     record_drop_targets(s, cx);
-    let main = col()
+    // The page is a card under the title band: the window's caption buttons sit in the band,
+    // on the sidebar's ground, clear of the card's corner.
+    let card = col()
         .key("main")
+        .w_full()
         .grow(1.0)
-        .min_w(0.0)
-        .h_full()
+        .min_h(0.0)
+        .mr(INSET)
+        .mb(INSET)
         .fill(p.bg)
+        .radius(CARD_RADIUS)
+        .continuous_corners()
+        .clip_rounded(CARD_RADIUS)
+        .border(1.0, p.line)
+        .shadow(1.0, 3.0, p.shadow.alpha(if p.dark { 0.35 } else { 0.06 }))
         .child(
             col().key("page").w_full().grow(1.0).min_h(0.0).scroll(ScrollSpec { stick_bottom: false }).child(page),
         )
-        .child(topbar(s, &p, insets.trailing));
+;
+    let main = col()
+        .key("main-column")
+        .grow(1.0)
+        .min_w(0.0)
+        .h_full()
+        .child(topbar(s, &p, insets.trailing))
+        .child(card);
 
     let mut root = row()
         .key("root")
         .w_full()
         .h_full()
-        .fill(p.bg)
+        .fill(p.side)
         .child(sidebar(s, &p))
         .child(main)
         .on_drop_files(|s: &mut State, files, tx| {
@@ -86,7 +106,6 @@ pub fn view(s: &State, cx: &mut Cx<State>) -> El {
 // ---------------------------------------------------------------- top bar
 
 fn topbar(s: &State, p: &Palette, trailing: f32) -> El {
-    let over_art = matches!(s.page, Page::Home | Page::Game(_));
     let field = text_input(&s.query, TextStyle::new(13.5, 450.0).lh(20.0))
         .key("search")
         .single_line()
@@ -129,18 +148,16 @@ fn topbar(s: &State, p: &Palette, trailing: f32) -> El {
         .gap(10.0)
         .radius(6.0)
         .center_y()
-        .fill(if over_art { Color::BLACK.alpha(if p.dark { 0.42 } else { 0.08 }) } else { p.field })
-        .backdrop_blur(if over_art { 16.0 } else { 0.0 })
-        .border(1.0, if over_art { Color::WHITE.alpha(0.1) } else { p.line })
+        .fill(p.field)
+        .border(1.0, p.line)
         .focus_within_ring(2.0, 1.0, p.accent.alpha(0.5))
         .child(icon(Icon::Search, 16.0, p.faint))
         .child(field)
         .child(end);
     let back = s.can_go_back().then(|| {
         el().key("back").role("button").label("Retour").help("Retour (Alt+←)").size(36.0, 36.0).radius(6.0).center()
-            .fill(if over_art { Color::BLACK.alpha(if p.dark { 0.42 } else { 0.08 }) } else { p.field })
-            .backdrop_blur(if over_art { 16.0 } else { 0.0 })
-            .border(1.0, if over_art { Color::WHITE.alpha(0.1) } else { p.line })
+            .fill(p.field)
+            .border(1.0, p.line)
             .hover(p.hover)
             .press_scale(0.94)
             .child(icon(Icon::Back, 16.0, p.text))
@@ -148,14 +165,13 @@ fn topbar(s: &State, p: &Palette, trailing: f32) -> El {
     });
     row()
         .key("topbar")
-        .pin(Some(0.0), Some(0.0), Some(0.0), None)
+        .w_full()
         .h(TOPBAR)
-        .pl(24.0)
+        .pl(0.0)
         .pr(trailing + 12.0)
         .gap(10.0)
         .center_y()
         .window_drag()
-        .gradient(p.bg.alpha(if over_art { 0.0 } else { 0.96 }), p.bg.alpha(if over_art { 0.0 } else { 0.86 }))
         .children(back)
         .child(search)
 }
@@ -256,7 +272,7 @@ fn sidebar(s: &State, p: &Palette) -> El {
         .px(12.0)
         .pb(12.0)
         .child(
-            row().key("brand").h(TOPBAR + 8.0).px(10.0).gap(10.0).center_y().window_drag()
+            row().key("brand").h(TOPBAR).px(10.0).gap(10.0).center_y().window_drag()
                 .child(brand_mark(s, p))
                 .child(text("ARACH").font(display(24.0)).color(p.text)),
         )
@@ -264,7 +280,6 @@ fn sidebar(s: &State, p: &Palette) -> El {
         .children(running(s, p))
         .child(el().h(1.0).w_full().fill(p.line).my(8.0))
         .child(footer)
-        .child(el().pin(None, Some(0.0), Some(0.0), Some(0.0)).w(1.0).fill(p.line))
 }
 
 /// A downloaded update, one press from the page that installs it.

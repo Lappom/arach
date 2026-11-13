@@ -28,7 +28,7 @@ pub fn view(s: &State, p: &Palette, tab: Tab, w: f32, layer: &mut Vec<El>) -> El
     };
     let side = w >= SIDE_NAV;
     let content = col().key(format!("section-{tab:?}")).grow(1.0).min_w(0.0).max_w(760.0).gap(32.0).child(body);
-    let page = col().key("settings").w_full().px(PAD).pt(84.0).pb(64.0).gap(28.0)
+    let page = col().key("settings").w_full().px(PAD).pt(32.0).pb(64.0).gap(28.0)
         .child(text("Paramètres").font(display(42.0)).color(p.text));
     if side {
         page.child(row().w_full().gap(40.0).items_start().child(nav(s, p, tab, true)).child(content))

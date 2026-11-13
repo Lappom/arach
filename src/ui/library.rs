@@ -77,7 +77,7 @@ pub fn view(s: &State, p: &Palette, w: f32, layer: &mut Vec<El>) -> El {
             LibraryView::List => list(s, p, w - PAD * 2.0),
         }
     };
-    col().key("library").w_full().px(PAD).pt(84.0).pb(if s.selecting { 120.0 } else { 56.0 }).gap(24.0)
+    col().key("library").w_full().px(PAD).pt(32.0).pb(if s.selecting { 120.0 } else { 56.0 }).gap(24.0)
         .child(head)
         .child(toolbar)
         .children(active_filters(s, p))
