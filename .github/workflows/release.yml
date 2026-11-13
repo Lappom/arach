@@ -1,5 +1,9 @@
 # Pushing a tag `vX.Y.Z` builds arach.exe and publishes it as a GitHub Release, with the
 # `arach.exe.sha256` the updater checks the download against (src/update.rs).
+#
+# Tests and the release build run side by side, from the caches ci.yml saves on main; the
+# release is published only once both pass. A tag's own cache would serve no later tag, so
+# nothing is saved here.
 name: Release
 
 on:
@@ -9,11 +13,26 @@ on:
 permissions:
   contents: write
 
+# Same values in ci.yml: they're part of the cache key.
+env:
+  CARGO_TERM_COLOR: always
+  CARGO_PROFILE_DEV_DEBUG: "0"
+
 jobs:
-  release:
+  test:
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: test
+          save-if: false
+      - run: cargo test --locked
+
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
 
       - name: Tag matches Cargo.toml
         shell: bash
@@ -24,22 +43,37 @@ jobs:
             exit 1
           fi
 
-      # rust-toolchain.toml picks the toolchain; rustup installs it on first use.
       - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: release
+          save-if: false
 
-      - name: Test
-        run: cargo test --release
+      - run: cargo build --release --locked
 
-      - name: Build
-        run: cargo build --release
-
-      - name: Publish
+      - name: Checksum
         shell: bash
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir dist
           cp target/release/arach.exe dist/arach.exe
           (cd dist && sha256sum arach.exe > arach.exe.sha256)
+
+      - uses: actions/upload-artifact@v7
+        with:
+          name: arach
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          name: arach
+          path: dist
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
           gh release create "$GITHUB_REF_NAME" dist/arach.exe dist/arach.exe.sha256 \
-            --title "Arach ${GITHUB_REF_NAME#v}" --generate-notes
+            --repo "$GITHUB_REPOSITORY" --title "Arach ${GITHUB_REF_NAME#v}" --generate-notes
