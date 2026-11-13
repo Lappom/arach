@@ -208,6 +208,8 @@ click. The startup check can be turned off in About, and it never runs in a debu
 If Arach lives in a protected folder (`Program Files`), it can't replace itself: it says so and
 points to the release page.
 
+`arach --update` does the whole thing without a window (check, download, install, restart).
+
 Publishing a version: set `version` to `X.Y.Z` in `Cargo.toml`, then push the tag `vX.Y.Z`.
 The `.github/workflows/release.yml` workflow builds, tests and publishes `arach.exe` and
 `arach.exe.sha256`.
