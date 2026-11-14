@@ -48,7 +48,8 @@ No installer; Arach updates itself (see [Updates](#updates)).
   cover, landscape: background). The page takes on the tint of the game's artwork.
 - **Settings**: General (after launch: minimize / stay / quit, start page, shortcuts), Library
   (enabled stores, extra game folders, scan), Appearance (theme, Play button color, cover size,
-  layout), Online (covers and descriptions, language, SteamGridDB key, cache), Hidden games, About.
+  layout), Online (covers and descriptions, language, SteamGridDB key, cache), AI assistants (MCP),
+  Hidden games, About.
   Library › Consoles and Emulators: each console and the emulator that runs it, detected
   automatically or picked by hand.
 
@@ -197,6 +198,38 @@ is skipped rather than showing the wrong cover. Can be turned off in Settings �
 | Update pending | The `appmanifest`'s `StateFlags` (bits 2, 256, 512, 1024) or a `TargetBuildID` different from `buildid`. |
 | HowLongToBeat | The site's own search (`/api/search/site`, with the token from `/api/search/site/init`); only an identical name (or alias) counts. Kept 30 days. |
 | Uninstall | Steam: `steam://uninstall/<id>`. Others: the `UninstallString` of the registry's uninstall entries, matched by install folder, then by name; Xbox: Installed apps. A second press confirms. |
+
+## AI assistants (MCP)
+
+Arach is also a [Model Context Protocol](https://modelcontextprotocol.io) server: `arach.exe --mcp`
+speaks JSON-RPC on stdin/stdout, so Claude, Codex, Cursor, VS Code or any MCP app can read the
+library, launch games and change them. Settings › **Assistants IA** connects each app in one click
+(Claude Desktop, Claude Code, Codex, Cursor, VS Code, Windsurf): Arach adds itself to the app's MCP
+server list (JSON, or Codex's `config.toml` with its comments kept), keeping the original next to it
+as `.arach-backup`, and shows when each assistant last came by. Anything else gets the command and a
+JSON snippet to copy. ChatGPT only reaches MCP servers on the internet, not programs on the PC.
+
+| Tool | What it does |
+| --- | --- |
+| `list_games` | Fuzzy search by name, filters (store, favorites, collection, status, never played), sort, limit |
+| `get_game` | One game: description, genres, playtime and sessions, folder, size, status, rating, notes, versions, images, launch actions |
+| `library_overview` | Games per store, total playtime and size, most and recently played, collections |
+| `launch_game` | Starts an installed game |
+| `edit_game` | Name, description, developers, publishers, release, genres (`null`: back to the store's), status, rating, notes, favorite, collections |
+| `find_images` | Covers, backgrounds or logos from Steam and SteamGridDB |
+| `set_image` | A cover, background or logo from an https link or a file, or back to the store's |
+| `get_launch_actions` | What runs before and after every game, or one game, and the power plans and resolutions this PC offers |
+| `set_launch_actions` | Close Discord, power plan, resolution, scripts; for every game or one (its own, or back to everyone's) |
+
+Each permission has its own switch in the same tab: access at all, launching, editing games,
+changing launch actions, and changing scripts. Scripts run any command, so that one is off until the
+user turns it on.
+
+The library is read from Arach's own files at every call; hidden games are never shown. Launches and
+changes go through the Arach window: the server starts `arach.exe arach://mcp/<nonce>/<request>`,
+which the running window takes over (or which becomes the window), and waits for its answer in
+`%LOCALAPPDATA%\Arach\mcp\replies`. The window holds the library in memory, so nothing is lost to its
+next save, sessions are measured and the before/after actions run as for any launch.
 
 ## Updates
 

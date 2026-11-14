@@ -229,6 +229,11 @@ fn read<T: for<'de> Deserialize<'de>>(path: &Path) -> Option<T> {
 
 type Work = Box<dyn FnOnce() + Send>;
 
+/// Runs `f` on the writer once every save asked for before it is on disk.
+pub fn after_saves(f: impl FnOnce() + Send + 'static) {
+    write_later_fn(Box::new(f));
+}
+
 /// One writer thread, so two saves of the same file never race.
 fn write_later_fn(work: Work) {
     static WRITER: OnceLock<Sender<Work>> = OnceLock::new();

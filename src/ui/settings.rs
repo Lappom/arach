@@ -1,4 +1,4 @@
-//! Paramètres: one page, six sections. Every change applies and saves at once; there is no
+//! Paramètres: one page, seven sections. Every change applies and saves at once; there is no
 //! "Enregistrer" to forget.
 
 use rune::{Color, El, FileDialogOptions, Tx, col, el, row, text};
@@ -9,6 +9,7 @@ use super::theme::{ACCENTS, Palette, caption, display, mono, num, store_color, u
 use super::widgets::{Tone, ago, button, game_icon, ghost_button, keycaps, link, plural, segmented, size, store_dot, switch, tool_button};
 use crate::app::{Confirm, Overlay, Page, Scope, State, Tab, Update};
 use crate::detect::emulators;
+use crate::mcp::clients::{self, Status as Link};
 use crate::game::{Game, Source};
 use crate::settings::{Actions, AfterLaunch, CoverSize, LibraryView, StartPage, ThemeMode};
 use crate::system;
@@ -23,6 +24,7 @@ pub fn view(s: &State, p: &Palette, tab: Tab, w: f32, layer: &mut Vec<El>) -> El
         Tab::Library => library(s, p),
         Tab::Appearance => appearance(s, p, layer),
         Tab::Online => online(s, p, layer),
+        Tab::Assistants => assistants(s, p),
         Tab::Hidden => hidden(s, p),
         Tab::About => about(s, p),
     };
@@ -530,6 +532,138 @@ fn online(s: &State, p: &Palette, layer: &mut Vec<El>) -> El {
                 ghost_button(p, "clear-cache", "Vider le cache…", Some(Icon::Trash))
                     .on_press(|s: &mut State| s.overlay = Overlay::Confirm(Confirm::ClearCache))),
         ]))
+}
+
+// ---------------------------------------------------------------- assistants (MCP)
+
+fn assistants(s: &State, p: &Palette) -> El {
+    let mcp = &s.settings.mcp;
+    let server = group(p, "Serveur MCP", vec![
+        setting(p, "Accès des assistants",
+            "Claude, Cursor, VS Code… lisent votre bibliothèque par le protocole MCP : noms, stores, temps de jeu, statuts, notes et collections. Seule l'application qui démarre Arach y a accès.",
+            toggle(p, "mcp-enabled", "Accès des assistants", mcp.enabled, |st| st.mcp.enabled = !st.mcp.enabled)),
+        setting(p, "Lancer des jeux",
+            if mcp.enabled {
+                "Un assistant peut démarrer un jeu installé quand vous le lui demandez. Arach mesure la session et fait les actions avant et après, comme pour un jeu lancé ici."
+            } else {
+                "Sans accès, aucun assistant ne lit la bibliothèque ni ne lance de jeu."
+            },
+            toggle(p, "mcp-launch", "Autoriser les assistants à lancer des jeux", mcp.allow_launch, |st| st.mcp.allow_launch = !st.mcp.allow_launch)),
+        setting(p, "Modifier les jeux",
+            "Nom, description, studio, date, genres, statut, note, notes, favoris, collections, jaquette, fond et logo. Chaque changement s'affiche ici aussitôt.",
+            toggle(p, "mcp-edit-games", "Autoriser les assistants à modifier les jeux", mcp.edit_games, |st| st.mcp.edit_games = !st.mcp.edit_games)),
+        setting(p, "Modifier les actions de lancement",
+            "Fermer Discord, mode d'alimentation et résolution, pour tous les jeux ou un seul.",
+            toggle(p, "mcp-edit-actions", "Autoriser les assistants à modifier les actions de lancement", mcp.edit_actions, |st| st.mcp.edit_actions = !st.mcp.edit_actions)),
+        setting(p, "Modifier les scripts",
+            "Un script peut exécuter n'importe quelle commande sur ce PC. N'activez ceci que si vous faites confiance à l'assistant et à ce qu'il lit (une page web peut contenir des instructions piégées).",
+            toggle(p, "mcp-edit-scripts", "Autoriser les assistants à modifier les scripts avant et après les jeux", mcp.edit_scripts, |st| st.mcp.edit_scripts = !st.mcp.edit_scripts)),
+    ]);
+
+    let Some(view) = &s.mcp else {
+        return col().w_full().gap(32.0).child(server)
+            .child(group(p, "Applications", vec![setting(p, "Recherche des applications…", "", el())]));
+    };
+    let apps: Vec<El> = view.apps.iter().map(|a| app_row(p, a)).collect();
+
+    let others: Vec<El> = view.others.iter().map(|a| {
+        let version = if a.version.is_empty() { String::new() } else { format!(" {}", a.version) };
+        let tool = a.tool.as_ref().map(|t| format!(" · {t}")).unwrap_or_default();
+        row().w_full().h(56.0).px(20.0).gap(14.0).center_y()
+            .child(tile(p, &a.name, false))
+            .child(col().grow(1.0).min_w(0.0).gap(2.0)
+                .child(text(format!("{}{version}", a.name)).font(ui(14.0, 600.0)).color(p.text).truncate())
+                .child(text(format!("{}{tool}", ago(a.seen))).font(ui(12.5, 450.0)).color(p.faint).truncate()))
+    }).collect();
+
+    let (command, json) = (clients::command_line(&view.exe), clients::snippet(&view.exe));
+    let manual = col().w_full().px(20.0).py(16.0).gap(12.0)
+        .child(col().w_full().gap(3.0)
+            .child(text("Autre application").font(ui(14.0, 600.0)).color(p.text))
+            .child(text("Toute application compatible MCP peut démarrer Arach : ajoutez ce serveur (stdio) à ses réglages.")
+                .font(ui(13.0, 450.0)).color(p.faint).wrap()))
+        .child(row().key("mcp-command").w_full().h(36.0).px(12.0).radius(5.0).center_y().fill(p.field).border(1.0, p.line)
+            .child(text(command.clone()).font(mono(12.5)).color(p.text).truncate_middle().grow(1.0).min_w(0.0)))
+        .child(row().gap(10.0).flex_wrap()
+            .child(ghost_button(p, "mcp-copy-json", "Copier la configuration JSON", None)
+                .on_press_tx(move |s: &mut State, tx: &mut Tx| {
+                    tx.copy(json.clone());
+                    s.notify("Configuration copiée".into(), false, tx);
+                }))
+            .child(ghost_button(p, "mcp-copy-command", "Copier la commande", None)
+                .on_press_tx(move |s: &mut State, tx: &mut Tx| {
+                    tx.copy(command.clone());
+                    s.notify("Commande copiée".into(), false, tx);
+                })));
+
+    let mut page = col().w_full().gap(32.0)
+        .child(server)
+        .child(col().w_full().gap(10.0)
+            .child(group(p, "Applications", apps))
+            .child(note(p, "« Connecter » ajoute Arach à la liste des serveurs MCP de l'application (le fichier d'origine est gardé à côté, en .arach-backup). Rien d'autre n'y change.")));
+    if !others.is_empty() {
+        page = page.child(group(p, "Autres assistants venus", others));
+    }
+    page.child(col().w_full().gap(10.0)
+        .child(group(p, "Configuration manuelle", vec![manual]))
+        .child(note(p, "Outils proposés : list_games, get_game, library_overview (lire la bibliothèque) ; launch_game (lancer) ; edit_game, find_images, set_image (modifier un jeu et ses images) ; get_launch_actions, set_launch_actions (avant et après le jeu). Les modifications passent par cette fenêtre : Arach s'ouvre s'il était fermé.")))
+}
+
+/// A square with the app's initials, in the accent once Arach is connected to it.
+fn tile(p: &Palette, name: &str, on: bool) -> El {
+    // "Codex (OpenAI)" → "CO": the first letter of each word, punctuation left out.
+    let initials: String = name.split([' ', '-', '_']).filter_map(|w| w.chars().find(|c| c.is_alphanumeric())).take(2)
+        .collect::<String>().to_uppercase();
+    let c = if on { p.accent } else { p.muted };
+    el().size(32.0, 32.0).radius(6.0).center().fill(c.alpha(if on { 0.16 } else { 0.1 }))
+        .child(text(initials).font(ui(12.5, 700.0)).color(c))
+}
+
+fn app_row(p: &Palette, a: &crate::app::McpApp) -> El {
+    let (id, name) = (a.client.id, a.client.name);
+    let seen = a.seen.as_ref().map(|v| {
+        let tool = v.tool.as_ref().map(|t| format!(" ({t})")).unwrap_or_default();
+        format!(" · dernière visite {}{tool}", ago(v.seen).to_lowercase())
+    }).unwrap_or_default();
+    let detail = match &a.status {
+        Link::Missing => "Pas trouvé sur ce PC".to_string(),
+        Link::Available => "Non connecté".to_string(),
+        Link::Connected => format!("Connecté{seen}"),
+        Link::Elsewhere(cmd) if cmd.is_empty() => "Inscrit sans commande : à mettre à jour".to_string(),
+        Link::Elsewhere(cmd) => format!("Inscrit avec un autre chemin : {cmd}"),
+        Link::Unreadable(e) => e.clone(),
+    };
+    let connect = |label: &str, tone: Tone, glyph: Icon| {
+        button(p, format!("mcp-connect-{id}"), label, Some(glyph), tone)
+            .on_press_tx(move |s: &mut State, tx: &mut Tx| s.connect_mcp(id, true, tx))
+    };
+    let disconnect = || ghost_button(p, format!("mcp-disconnect-{id}"), "Déconnecter", None)
+        .on_press_tx(move |s: &mut State, tx: &mut Tx| s.connect_mcp(id, false, tx));
+    let config = a.config.clone();
+    let open = tool_button(p, format!("mcp-open-{id}"), Icon::Folder, "Afficher le fichier de réglages", 32.0)
+        .on_press_tx(move |s: &mut State, tx: &mut Tx| {
+            let target = if config.is_file() { config.clone() } else { config.parent().map(|d| d.to_path_buf()).unwrap_or_default() };
+            if let Err(e) = crate::launch::open_folder(&target) { s.notify(e, true, tx); }
+        });
+    let controls = row().gap(8.0).center_y();
+    let controls = match &a.status {
+        Link::Connected => controls.child(open).child(disconnect()),
+        Link::Elsewhere(_) => controls.child(disconnect()).child(connect("Mettre à jour", Tone::Primary, Icon::Refresh)),
+        Link::Available => controls.child(connect("Connecter", Tone::Primary, Icon::Plus)),
+        Link::Missing => controls.child(connect("Connecter", Tone::Secondary, Icon::Plus)),
+        Link::Unreadable(_) => controls.child(open),
+    };
+    let on = a.status == Link::Connected;
+    let warn = matches!(a.status, Link::Unreadable(_) | Link::Elsewhere(_));
+    row().key(format!("mcp-app-{id}")).w_full().min_h(60.0).px(20.0).py(10.0).gap(14.0).center_y()
+        .child(tile(p, name, on))
+        .child(col().grow(1.0).min_w(0.0).gap(2.0)
+            .child(text(name).font(ui(14.0, 600.0)).color(if a.status == Link::Missing { p.muted } else { p.text }))
+            .child(row().gap(6.0).center_y().min_w(0.0)
+                .children(on.then(|| el().size(6.0, 6.0).radius(3.0).fill(p.accent)))
+                .children(warn.then(|| icon(Icon::Alert, 13.0, p.faint)))
+                .child(text(detail).font(ui(12.5, 450.0)).color(if on { p.muted } else { p.faint }).truncate_middle().grow(1.0).min_w(0.0))))
+        .child(controls)
 }
 
 fn hidden(s: &State, p: &Palette) -> El {

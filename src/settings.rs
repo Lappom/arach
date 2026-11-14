@@ -142,6 +142,33 @@ pub struct Settings {
     pub version: u32,
     /// Look for a new Arach on GitHub at startup and download it in the background.
     pub auto_update: bool,
+    /// What AI assistants connected over MCP (`arach --mcp`) may do.
+    pub mcp: Mcp,
+}
+
+/// The MCP server AI assistants start (`arach --mcp`): it reads the library, and launches games
+/// through the open window.
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[serde(default)]
+pub struct Mcp {
+    /// Answers assistants at all; off, every tool says it's turned off in Arach.
+    pub enabled: bool,
+    /// Assistants may start games, not only read the library.
+    pub allow_launch: bool,
+    /// Assistants may change a game's facts, status, rating, notes, favorites, collections and
+    /// pictures.
+    pub edit_games: bool,
+    /// Assistants may change what happens around a game: Discord, power plan, resolution.
+    pub edit_actions: bool,
+    /// Assistants may write the scripts run before and after a game: running any command, so
+    /// off unless the user turns it on.
+    pub edit_scripts: bool,
+}
+
+impl Default for Mcp {
+    fn default() -> Self {
+        Mcp { enabled: true, allow_launch: true, edit_games: true, edit_actions: true, edit_scripts: false }
+    }
 }
 
 pub const VERSION: u32 = 2;
@@ -177,6 +204,7 @@ impl Default for Settings {
             discord_presence: true,
             version: VERSION,
             auto_update: true,
+            mcp: Mcp::default(),
         }
     }
 }

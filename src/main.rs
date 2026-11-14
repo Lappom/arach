@@ -10,6 +10,7 @@ mod drives;
 mod extras;
 mod game;
 mod launch;
+mod mcp;
 mod meta;
 mod search;
 mod settings;
@@ -28,6 +29,10 @@ fn main() {
     // `arach --update`: the whole update without a window.
     if std::env::args().any(|a| a == "--update") {
         std::process::exit(update::cli());
+    }
+    // `arach --mcp`: the MCP server an AI assistant starts, on stdin/stdout, beside the window.
+    if std::env::args().any(|a| a == "--mcp") {
+        std::process::exit(mcp::serve());
     }
     // Headless snapshots run beside an open window.
     let headless = std::env::args().any(|a| a == "--snap");
@@ -72,6 +77,7 @@ fn main() {
         ("settings-library", |s| s.scene_page(Page::Settings(Tab::Library))),
         ("settings-look", |s| s.scene_page(Page::Settings(Tab::Appearance))),
         ("settings-about", |s| s.scene_page(Page::Settings(Tab::About))),
+        ("settings-ai", |s| s.scene_page(Page::Settings(Tab::Assistants))),
         ("update", |s| {
             let release = update::Release {
                 version: "9.9.0".into(),
@@ -101,7 +107,8 @@ fn main() {
             Overlay::ArtPicker { id: "steam:1771300".into(), kind: meta::picker::Kind::Cover })),
     ];
 
-    let app = App::new(spec);
+    // `arach://launch/<id>`: an assistant asked for a game (`mcp`), through this window.
+    let app = App::new(spec).on_open_url(State::open_link);
     let me = app.handle();
     // Opens maximized, with its caption buttons; F11 toggles full screen.
     app.init(move || {

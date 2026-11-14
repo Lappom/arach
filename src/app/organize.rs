@@ -16,7 +16,7 @@ use crate::store::{self, Edit, Status, UserData};
 // ---------------------------------------------------------------- versions
 
 /// What the library shows after merging: one game per entry, the others as its versions.
-pub(super) struct Grouped {
+pub(crate) struct Grouped {
     pub games: Vec<Game>,
     /// Primary id → the other copies, best first.
     pub versions: HashMap<String, Vec<Game>>,
@@ -29,7 +29,7 @@ pub(super) struct Grouped {
 /// Games sharing an install folder (an EA game bought on Steam, a GOG game also found in a
 /// watched folder) become one, the first store in [`crate::game::Source`] order leading; the
 /// user's merges and splits override the guess.
-pub(super) fn group(all: Vec<Game>, user: &UserData, cache: &Cache) -> Grouped {
+pub(crate) fn group(all: Vec<Game>, user: &UserData, cache: &Cache) -> Grouped {
     let ids: HashSet<&str> = all.iter().map(|g| g.id.as_str()).collect();
     // The first game claiming each folder, in store order.
     let mut leader_of_dir: HashMap<String, (crate::game::Source, String)> = HashMap::new();
@@ -415,7 +415,7 @@ fn list(s: &str) -> Vec<String> {
 
 impl State {
     /// What the store says, before the user's corrections: the dialog compares with it.
-    fn source_values(&self, id: &str) -> [String; 6] {
+    pub(super) fn source_values(&self, id: &str) -> [String; 6] {
         let base = self.library.iter().chain(self.user.custom.iter()).find(|g| g.id == id);
         let meta = self.cache.meta.get(id).filter(|m| m.found())
             .or_else(|| self.versions.get(id)?.iter().find_map(|v| self.cache.meta.get(&v.id).filter(|m| m.found())))
@@ -471,6 +471,14 @@ impl State {
             release: differs(4).then(|| typed[4].clone()),
             genres: as_list(5),
         };
+        self.store_edit(&id, edit);
+        self.notify("Informations enregistrées".into(), false, tx);
+    }
+
+    /// Keeps the user's corrections to a game's facts; a new name looks the game up again
+    /// under it when the stores didn't know it.
+    pub(super) fn store_edit(&mut self, id: &str, edit: Edit) {
+        let id = id.to_string();
         let renamed = self.user.edits.get(&id).and_then(|e| e.name.clone()) != edit.name;
         if edit.is_empty() { self.user.edits.remove(&id); } else { self.user.edits.insert(id.clone(), edit.clone()); }
         self.save_user();
@@ -484,7 +492,6 @@ impl State {
         } else {
             self.rebuild();
         }
-        self.notify("Informations enregistrées".into(), false, tx);
     }
 
     /// Back to what the stores say.

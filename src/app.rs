@@ -15,9 +15,13 @@ use crate::store::{Collection, Session, Status};
 use crate::{actions, detect, discord, drives, launch, search, store, system, track};
 
 mod extras;
+mod mcp;
 mod organize;
 pub use organize::{EDIT_FIELDS, Filter, Picker, Played, toggle};
 mod updates;
+
+pub(crate) use organize::Grouped;
+pub use mcp::McpApp;
 pub use updates::Update;
 
 const NOTICE_SECS: f64 = 3.4;
@@ -29,18 +33,20 @@ pub enum Tab {
     Library,
     Appearance,
     Online,
+    Assistants,
     Hidden,
     About,
 }
 
 impl Tab {
-    pub const ALL: [Tab; 6] = [Tab::General, Tab::Library, Tab::Appearance, Tab::Online, Tab::Hidden, Tab::About];
+    pub const ALL: [Tab; 7] = [Tab::General, Tab::Library, Tab::Appearance, Tab::Online, Tab::Assistants, Tab::Hidden, Tab::About];
     pub fn label(self) -> &'static str {
         match self {
             Tab::General => "Général",
             Tab::Library => "Bibliothèque",
             Tab::Appearance => "Apparence",
             Tab::Online => "En ligne",
+            Tab::Assistants => "Assistants IA",
             Tab::Hidden => "Jeux masqués",
             Tab::About => "À propos",
         }
@@ -212,6 +218,8 @@ pub struct State {
     /// Game id → its saves, screenshots, achievements… as last gathered for its page.
     pub extras: HashMap<String, crate::extras::Extras>,
     hltb: crate::extras::hltb::Cache,
+    /// Paramètres › Assistants IA: each AI app, whether Arach is in it, and what it last did.
+    pub mcp: Option<mcp::McpView>,
     pub me: AppHandle<State>,
 }
 
@@ -355,6 +363,7 @@ impl State {
             just_updated: false,
             extras: HashMap::new(),
             hltb: crate::extras::hltb::load_cache(),
+            mcp: None,
             me,
         };
         s.sgdb_field = TextEdit::new(&s.settings.sgdb_key).secure();
@@ -426,27 +435,33 @@ impl State {
 
 // ---------------------------------------------------------------- the library
 
+/// The library as the window shows it: the last scan and the user's own games, with fetched
+/// art and measured sizes folded in, each game's copies grouped under it. The MCP server
+/// (`crate::mcp`) builds the same from the files on disk.
+pub(crate) fn assemble(library: &[Game], user: &store::UserData, cache: &meta::Cache) -> Grouped {
+    let all: Vec<Game> = library
+        .iter()
+        .chain(user.custom.iter())
+        .map(|g| {
+            let mut g = g.clone();
+            if let Some(m) = cache.meta.get(&g.id) {
+                g.art = g.art.or(&m.art);
+                g.steam_appid = g.steam_appid.or(m.appid);
+            }
+            if g.size == 0 && let Some(&size) = cache.sizes.get(&g.id) {
+                g.size = size;
+            }
+            g
+        })
+        .collect();
+    organize::group(all, user, cache)
+}
+
 impl State {
     /// Folds fetched art and measured sizes into the scan, groups the copies of each game, and
     /// recomputes every list.
     fn rebuild(&mut self) {
-        let all: Vec<Game> = self
-            .library
-            .iter()
-            .chain(self.user.custom.iter())
-            .map(|g| {
-                let mut g = g.clone();
-                if let Some(m) = self.cache.meta.get(&g.id) {
-                    g.art = g.art.or(&m.art);
-                    g.steam_appid = g.steam_appid.or(m.appid);
-                }
-                if g.size == 0 && let Some(&size) = self.cache.sizes.get(&g.id) {
-                    g.size = size;
-                }
-                g
-            })
-            .collect();
-        let grouped = organize::group(all, &self.user, &self.cache);
+        let grouped = assemble(&self.library, &self.user, &self.cache);
         (self.games, self.versions, self.owner, self.metas) = (grouped.games, grouped.versions, grouped.owner, grouped.metas);
         self.selected.retain(|id| self.games.iter().any(|g| &g.id == id));
         self.names = self.games.iter().map(|g| search::normalize(&g.name)).collect();
@@ -584,6 +599,9 @@ impl State {
         self.save_args();
         if let Page::Game(id) = &page {
             self.load_fields(&id.clone());
+        }
+        if page == Page::Settings(Tab::Assistants) {
+            self.refresh_mcp();
         }
         let from = std::mem::replace(&mut self.page, page);
         self.history.push(from);
@@ -1299,6 +1317,9 @@ impl State {
     pub fn scene_page(&mut self, page: Page) {
         if let Page::Game(id) = &page {
             self.load_fields(&id.clone());
+        }
+        if page == Page::Settings(Tab::Assistants) {
+            self.mcp = Some(mcp::McpView::read());
         }
         self.page = page;
     }
